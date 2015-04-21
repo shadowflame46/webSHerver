@@ -103,7 +103,7 @@ EOF
    warn "Created bashttpd.conf using defaults.  Please review it/configure before running bashttpd again."
    exit 1
 }
-recv() { echo "< $@" >&2; } # echo "< $@"; } #>> datalog.txt; }
+recv() { echo "< $@" >&2; } #echo "< $@"; } #>> datalog.txt; }
 send() { echo "> $@" >&2;
          printf '%s\r\n' "$*"; }
  
@@ -167,14 +167,14 @@ serve_file() {
        ;;
    esac
  
-#   if [ "$CONTENT_TYPE"="text/x-shellscript" ]; then
-#   bash "$file" > output.txt && send_response_ok_exit < "output.txt"
-#   fi
+   if [ "$CONTENT_TYPE"="text/x-shellscript" ]; then
+   bash "$file" > output.txt && send_response_ok_exit < "output.txt"
+   fi
 #   add_response_header "Content-Type"   "$CONTENT_TYPE";
- #  read -r CONTENT_LENGTH < <(stat -c'%s' "$file") && add_response_header "Content-Length" "$CONTENT_LENGTH";
-  # send_response_ok_exit < "$file";
+#   read -r CONTENT_LENGTH < <(stat -c'%s' "$file") && add_response_header "Content-Length" "$CONTENT_LENGTH";
+#   send_response_ok_exit < "$file";
    
-add_response_header "Content-Type"   "$CONTENT_TYPE";
+   add_response_header "Content-Type"   "$CONTENT_TYPE";
 
    read -r CONTENT_LENGTH < <(stat -c'%s' "$file")         && \
       add_response_header "Content-Length" "$CONTENT_LENGTH"
