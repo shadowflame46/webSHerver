@@ -106,6 +106,13 @@ EOF
 recv() { echo "< $@" >&2; } #echo "< $@"; } #>> datalog.txt; }
 send() { echo "> $@" >&2;
          printf '%s\r\n' "$*"; }
+
+read_post_data() {
+#  read -r $line;
+  while read -r $line; do
+     echo "$line" > textbox.txt
+  done
+}
  
 [[ $UID = 0 ]] && warn "It is not recommended to run bashttpd as root."
  
@@ -286,12 +293,22 @@ declare -a REQUEST_HEADERS
 while read -r line; do
    line=${line%%$'\r'}
    recv "$line"
- 
-   # If we've reached the end of the headers, break.
-   [ -z "$line" ] && break
+
+   if [[ $line == "Content-Length: "* ]] 
+     then LENGTH=`echo "$line" | awk '{ print $2 }'`;
+   fi
+   if [ -z "$line" ] 
+    then break
+   fi
  
    REQUEST_HEADERS+=("$line")
 done
+
+if [ "$REQUEST_METHOD" =  "POST" ]
+   then echo "reading line" >> debug.txt; read -r -n $LENGTH line; echo "i read the line" >> debug.txt;
+     echo "$line" > textbox.txt; 
+fi
+
 
 source "${BASH_SOURCE[0]%/*}"/bashttpd.conf
 fail_with 500
