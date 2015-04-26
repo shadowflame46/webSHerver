@@ -177,7 +177,7 @@ serve_file() {
    add_response_header "Content-Type"   "$CONTENT_TYPE";
  
    if [ "$CONTENT_TYPE" == "text/x-shellscript" ]; then 
-	  bash "$file" "$POSTDATA" > output.txt;
+	  bash "$file" "$POSTDATA";
           read -r CONTENT_LENGTH < <(stat -c'%s' 'output.txt') && add_response_header "Content-Length" "$CONTENT_LENGTH"; 
           send_response_ok_exit < "output.txt";
      else read -r CONTENT_LENGTH < <(stat -c'%s' "$file") && add_response_header "Content-Length" "$CONTENT_LENGTH";
@@ -305,8 +305,8 @@ while read -r line; do
 done
 
 if [ "$REQUEST_METHOD" =  "POST" ]
-   then echo "reading line" >> debug.txt; read -r -n $LENGTH line; echo "i read the line" >> debug.txt;
-   POSTDATA=`echo "$line" | cut -f2 -d '='`; 
+   then read -r -n $LENGTH line;
+   POSTDATA=`echo "$line" | cut -f2- -d '='`; 
 fi
 
 

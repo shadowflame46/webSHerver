@@ -1,3 +1,2 @@
 #!/bin/bash
-
-transmission-cli -D -f transmission-cli -w ./torrents/ $1
+transmission-cli -D -f ./kill.sh -w ./torrents/ $1 
